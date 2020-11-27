@@ -1,25 +1,79 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Card, CardContent, Box } from '@material-ui/core';
+import { Field } from 'formik';
+import { CheckboxWithLabel, TextField } from 'formik-material-ui';
+import { mixed, number, object } from "yup";
+import { FormikStep, FormikStepper } from './FormStepper';
+
+const sleep = (time: number) => new Promise((acc) => setTimeout(acc, time));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Card>
+      <CardContent>
+        <FormikStepper
+          initialValues={{
+            firstName: '',
+            lastName: '',
+            millionaire: false,
+            money: 0,
+            description: '',
+          }}
+          onSubmit={async (values) => {
+            await sleep(1000);
+            console.log('values', values);
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <FormikStep label="Personal Data">
+            <Box paddingBottom={2}>
+              <Field fullWidth name="firstName" component={TextField} label="First Name" />
+            </Box>
+            <Box paddingBottom={2}>
+              <Field fullWidth name="lastName" component={TextField} label="Last Name" />
+            </Box>
+            <Box paddingBottom={2}>
+              <Field
+                name="millionaire"
+                type="checkbox"
+                component={CheckboxWithLabel}
+                Label={{ label: 'I am a millionaire' }}
+              />
+            </Box>
+          </FormikStep>
+          <FormikStep
+            label="Bank Accounts"
+            validationSchema={object({
+              money: mixed().when('millionaire', {
+                is: true,
+                then: number()
+                  .required()
+                  .min(
+                    1000000,
+                    'Because you said you are a millionaire you need to have 1 million'
+                  ),
+                otherwise: number().required(),
+              }),
+            })}
+          >
+            <Box paddingBottom={2}>
+              <Field
+                fullWidth
+                name="money"
+                type="number"
+                component={TextField}
+                label="All the money I have"
+              />
+            </Box>
+
+          </FormikStep>
+          <FormikStep label="More Info">
+            <Box paddingBottom={2}>
+              <Field fullWidth name="description" component={TextField} label="Description" />
+            </Box>
+          </FormikStep>
+        </FormikStepper>
+      </CardContent>
+    </Card>
   );
 }
 
