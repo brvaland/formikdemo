@@ -2,8 +2,9 @@ import React from 'react';
 import { Card, CardContent, Box } from '@material-ui/core';
 import { Field } from 'formik';
 import { CheckboxWithLabel, TextField } from 'formik-material-ui';
-import { mixed, number, object } from "yup";
+import { mixed, number, object, string } from "yup";
 import { FormikStep, FormikStepper } from './FormStepper';
+import ShowFullName from './ShowFullName';
 
 const sleep = (time: number) => new Promise((acc) => setTimeout(acc, time));
 
@@ -24,7 +25,12 @@ function App() {
             console.log('values', values);
           }}
         >
-          <FormikStep label="Personal Data">
+          <FormikStep 
+            label="Personal Data"
+            validationSchema={object({
+              lastName: string().required("Required")
+            })}
+          >
             <Box paddingBottom={2}>
               <Field fullWidth name="firstName" component={TextField} label="First Name" />
             </Box>
@@ -56,6 +62,10 @@ function App() {
             })}
           >
             <Box paddingBottom={2}>
+              <ShowFullName />
+            </Box>
+
+            <Box paddingBottom={2}>
               <Field
                 fullWidth
                 name="money"
@@ -64,7 +74,7 @@ function App() {
                 label="All the money I have"
               />
             </Box>
-
+            
           </FormikStep>
           <FormikStep label="More Info">
             <Box paddingBottom={2}>

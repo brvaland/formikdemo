@@ -38,7 +38,7 @@ export const FormikStepper = ({ children, ...props }: FormikConfig<FormikValues>
                 }
             }}
         >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, isValid, dirty }) => (
                 <Form autoComplete="off">
                     <Stepper alternativeLabel activeStep={step}>
                         {childrenArray.map((child, index) => (
@@ -66,7 +66,7 @@ export const FormikStepper = ({ children, ...props }: FormikConfig<FormikValues>
                         <Grid item>
                             <Button
                                 startIcon={isSubmitting ? <CircularProgress size="1rem" /> : null}
-                                disabled={isSubmitting}
+                                disabled={!(isValid && dirty)}
                                 variant="contained"
                                 color="primary"
                                 type="submit"
